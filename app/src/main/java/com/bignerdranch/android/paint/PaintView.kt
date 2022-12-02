@@ -1,5 +1,6 @@
 package com.bignerdranch.android.paint
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -13,10 +14,9 @@ import com.bignerdranch.android.paint.MainActivity.Companion.paintBrush
 import com.bignerdranch.android.paint.MainActivity.Companion.path
 import kotlin.math.abs
 
-class PaintView : View{
+class PaintView : View {
 
-    var params : ViewGroup.LayoutParams? = null
-    private var mPath : Path ?= null
+    private var params : ViewGroup.LayoutParams? = null
     private var mX : Float ?= null
     private var mY : Float ?= null
     private var touchTolerance : Float = 4f
@@ -49,48 +49,36 @@ class PaintView : View{
         params = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        var x = event.x
-        var y = event.y
+        val x = event.x
+        val y = event.y
 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                /*
                 touchStart(x, y)
                 invalidate()
-                 */
-
-                path.moveTo(x,y)
-                return true
             }
             MotionEvent.ACTION_MOVE -> {
-                /*
                 touchMove(x, y)
                 invalidate()
-                 */
-
-                path.lineTo(x,y)
-                pathList.add(path)
-                colorList.add(currentBrush)
             }
-            /*
             MotionEvent.ACTION_UP -> {
                 touchUp()
                 invalidate()
             }
-             */
-            else -> return false
+            else -> {}
         }
-        postInvalidate()
-        return false
+        invalidate()
+        return true
     }
-    /*
+
     private fun touchStart(x: Float, y: Float) {
-        mPath = Path()
-        pathList.add(mPath!!)
+        path = Path()
+        pathList.add(path)
         colorList.add(currentBrush)
-        mPath!!.reset()
-        mPath!!.moveTo(x,y)
+        path.reset()
+        path.moveTo(x,y)
         mX = x
         mY = y
     }
@@ -99,17 +87,15 @@ class PaintView : View{
         val dX : Float = abs(x - mX!!)
         val dY : Float = abs(y - mY!!)
         if (dX >= touchTolerance || dY >= touchTolerance) {
-            mPath!!.quadTo(mX!!, mY!!, (x + mX!!) / 2, (y + mY!!) / 2)
+            path.quadTo(mX!!, mY!!, (x + mX!!) / 2, (y + mY!!) / 2)
             mX = x
             mY = y
         }
     }
 
     private fun touchUp() {
-        mPath!!.lineTo(mX!!, mY!!)
+        path.lineTo(mX!!, mY!!)
     }
-
-     */
 
     override fun onDraw(canvas: Canvas) {
 

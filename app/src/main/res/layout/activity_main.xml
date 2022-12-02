@@ -58,10 +58,10 @@
             android:background="@mipmap/clear" />
     </LinearLayout>
 
-    <com.bignerdranch.android.paint.PaintView
-        android:id="@+id/PaintArea"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar" >
-    </com.bignerdranch.android.paint.PaintView>
+        <include layout="@layout/paint_view" />
+    </RelativeLayout>
 </RelativeLayout>
