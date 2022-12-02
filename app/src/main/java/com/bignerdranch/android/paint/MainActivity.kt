@@ -1,12 +1,15 @@
 package com.bignerdranch.android.paint
 
-import android.app.Dialog
 import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.os.Bundle
 import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.SeekBar
+import android.widget.SeekBar.OnSeekBarChangeListener
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.bignerdranch.android.paint.PaintView.Companion.colorList
@@ -16,6 +19,7 @@ import com.bignerdranch.android.paint.PaintView.Companion.undoneColorList
 import com.bignerdranch.android.paint.PaintView.Companion.undonePathList
 import kotlinx.android.synthetic.main.paint_view.*
 import yuku.ambilwarna.AmbilWarnaDialog
+import kotlin.properties.Delegates
 
 
 class MainActivity : AppCompatActivity() {
@@ -46,7 +50,40 @@ class MainActivity : AppCompatActivity() {
         }
 
         brushWidthButton.setOnClickListener {
+            val dialogBuilder = AlertDialog.Builder(this)
+            val seekBar = SeekBar(this)
 
+            seekBar.max = 100
+            seekBar.progress = paintBrush.strokeWidth.toInt()
+
+            dialogBuilder.setTitle("Brush Width")
+                .setMessage(paintBrush.strokeWidth.toInt().toString() + "px")
+                .setView(seekBar)
+                .setPositiveButton("Select") { _, _ ->
+                    run {
+                        paintBrush.strokeWidth = seekBar.progress.toFloat()
+                    }
+                }
+                .setNegativeButton("Cancel") { _, _ ->
+                    run {
+
+                    }
+                }
+            val dialog = dialogBuilder.create()
+            var width: Int
+            seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    width = progress
+                    dialog.setMessage(width.toString() + "px");
+                }
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
+
+                }
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+
+                }
+            });
+            dialog.show();
         }
 
         eraserButton.setOnClickListener {
