@@ -30,6 +30,13 @@
             android:background="@mipmap/paintbrush" />
 
         <ImageButton
+            android:id="@+id/brush_width"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_margin="10dp"
+            android:background="@mipmap/brush_width" />
+
+        <ImageButton
             android:id="@+id/eraser"
             android:layout_width="35dp"
             android:layout_height="35dp"

@@ -1,22 +1,22 @@
 package com.bignerdranch.android.paint
 
+import android.app.Dialog
+import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageButton
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.bignerdranch.android.paint.PaintView.Companion.colorList
 import com.bignerdranch.android.paint.PaintView.Companion.currentBrush
 import com.bignerdranch.android.paint.PaintView.Companion.pathList
 import com.bignerdranch.android.paint.PaintView.Companion.undoneColorList
 import com.bignerdranch.android.paint.PaintView.Companion.undonePathList
-import com.flask.colorpicker.ColorPickerView
-import com.flask.colorpicker.builder.ColorPickerDialogBuilder
-import com.github.dhaval2404.colorpicker.ColorPickerDialog
-import com.github.dhaval2404.colorpicker.model.ColorShape
 import kotlinx.android.synthetic.main.paint_view.*
 import yuku.ambilwarna.AmbilWarnaDialog
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         colorButton = findViewById(R.id.colorPicker)
         val paintbrushButton = findViewById<ImageButton>(R.id.paintbrush)
+        val brushWidthButton = findViewById<ImageButton>(R.id.brush_width)
         val eraserButton = findViewById<ImageButton>(R.id.eraser)
         val undoButton = findViewById<ImageButton>(R.id.undo)
         val redoButton = findViewById<ImageButton>(R.id.redo)
@@ -42,6 +43,10 @@ class MainActivity : AppCompatActivity() {
 
         paintbrushButton.setOnClickListener {
             currentColor(myColor)
+        }
+
+        brushWidthButton.setOnClickListener {
+
         }
 
         eraserButton.setOnClickListener {
@@ -57,11 +62,26 @@ class MainActivity : AppCompatActivity() {
         }
 
         clearButton.setOnClickListener {
-            pathList.clear()
-            undonePathList.clear()
-            colorList.clear()
-            undoneColorList.clear()
-            path.reset()
+            val dialogBuilder = AlertDialog.Builder(this)
+
+            dialogBuilder.setMessage("Do you want to remove all strokes permanently?")
+                .setCancelable(true)
+                .setPositiveButton("Yes", DialogInterface.OnClickListener {
+                        _, _ -> run {
+                        pathList.clear()
+                        undonePathList.clear()
+                        colorList.clear()
+                        undoneColorList.clear()
+                        path.reset()
+                    }
+                })
+                .setNegativeButton("Cancel", DialogInterface.OnClickListener {
+                        dialog, _ -> dialog.cancel()
+                })
+
+            val alert = dialogBuilder.create()
+            alert.setTitle("Warning")
+            alert.show()
         }
     }
 
