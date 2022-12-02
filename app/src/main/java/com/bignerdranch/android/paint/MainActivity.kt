@@ -9,12 +9,14 @@ import android.widget.ImageButton
 import com.bignerdranch.android.paint.PaintView.Companion.colorList
 import com.bignerdranch.android.paint.PaintView.Companion.currentBrush
 import com.bignerdranch.android.paint.PaintView.Companion.pathList
+import com.bignerdranch.android.paint.PaintView.Companion.undoneColorList
+import com.bignerdranch.android.paint.PaintView.Companion.undonePathList
 import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import com.github.dhaval2404.colorpicker.ColorPickerDialog
 import com.github.dhaval2404.colorpicker.model.ColorShape
+import kotlinx.android.synthetic.main.paint_view.*
 import yuku.ambilwarna.AmbilWarnaDialog
-import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
 
@@ -47,16 +49,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         undoButton.setOnClickListener {
-
+            paintView.setUndo()
         }
 
         redoButton.setOnClickListener {
-
+            paintView.setRedo()
         }
 
         clearButton.setOnClickListener {
             pathList.clear()
+            undonePathList.clear()
             colorList.clear()
+            undoneColorList.clear()
             path.reset()
         }
     }
