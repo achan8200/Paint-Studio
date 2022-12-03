@@ -1,15 +1,12 @@
 package com.bignerdranch.android.paint
 
-import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.os.Bundle
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.bignerdranch.android.paint.PaintView.Companion.colorList
@@ -19,7 +16,6 @@ import com.bignerdranch.android.paint.PaintView.Companion.undoneColorList
 import com.bignerdranch.android.paint.PaintView.Companion.undonePathList
 import kotlinx.android.synthetic.main.paint_view.*
 import yuku.ambilwarna.AmbilWarnaDialog
-import kotlin.properties.Delegates
 
 
 class MainActivity : AppCompatActivity() {
@@ -74,7 +70,7 @@ class MainActivity : AppCompatActivity() {
             seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                     width = progress
-                    dialog.setMessage(width.toString() + "px");
+                    dialog.setMessage(width.toString() + "px")
                 }
                 override fun onStartTrackingTouch(seekBar: SeekBar) {
 
@@ -82,8 +78,8 @@ class MainActivity : AppCompatActivity() {
                 override fun onStopTrackingTouch(seekBar: SeekBar) {
 
                 }
-            });
-            dialog.show();
+            })
+            dialog.show()
         }
 
         eraserButton.setOnClickListener {
@@ -103,18 +99,18 @@ class MainActivity : AppCompatActivity() {
 
             dialogBuilder.setMessage("Do you want to remove all strokes permanently?")
                 .setCancelable(true)
-                .setPositiveButton("Yes", DialogInterface.OnClickListener {
-                        _, _ -> run {
+                .setPositiveButton("Yes") { _, _ ->
+                    run {
                         pathList.clear()
                         undonePathList.clear()
                         colorList.clear()
                         undoneColorList.clear()
                         path.reset()
                     }
-                })
-                .setNegativeButton("Cancel", DialogInterface.OnClickListener {
-                        dialog, _ -> dialog.cancel()
-                })
+                }
+                .setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.cancel()
+                }
 
             val alert = dialogBuilder.create()
             alert.setTitle("Warning")

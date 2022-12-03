@@ -17,7 +17,6 @@ import kotlin.math.abs
 class PaintView : View {
 
     private var params : ViewGroup.LayoutParams? = null
-    private var isCleared : Boolean = false
     private var mX : Float ?= null
     private var mY : Float ?= null
     private var touchTolerance : Float = 4f
