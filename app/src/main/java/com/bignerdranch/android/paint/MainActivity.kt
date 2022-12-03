@@ -1,19 +1,16 @@
 package com.bignerdranch.android.paint
 
 import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Path
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.bignerdranch.android.paint.PaintView.Companion.colorList
 import com.bignerdranch.android.paint.PaintView.Companion.currentBrush
-import com.bignerdranch.android.paint.PaintView.Companion.pathList
-import com.bignerdranch.android.paint.PaintView.Companion.undoneColorList
-import com.bignerdranch.android.paint.PaintView.Companion.undonePathList
+import com.bignerdranch.android.paint.PaintView.Companion.currentWidth
+import com.bignerdranch.android.paint.PaintView.Companion.drawings
+import com.bignerdranch.android.paint.PaintView.Companion.undoneDrawings
 import kotlinx.android.synthetic.main.paint_view.*
 import yuku.ambilwarna.AmbilWarnaDialog
 
@@ -21,7 +18,7 @@ import yuku.ambilwarna.AmbilWarnaDialog
 class MainActivity : AppCompatActivity() {
 
     private lateinit var colorButton: ImageButton
-    private var myColor = paintBrush.color
+    private var myColor = currentBrush
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,19 +47,20 @@ class MainActivity : AppCompatActivity() {
             val seekBar = SeekBar(this)
 
             seekBar.max = 100
-            seekBar.progress = paintBrush.strokeWidth.toInt()
+            seekBar.progress = currentWidth.toInt()
 
             dialogBuilder.setTitle("Brush Width")
-                .setMessage(paintBrush.strokeWidth.toInt().toString() + "px")
+                .setMessage(currentWidth.toInt().toString() + "px")
                 .setView(seekBar)
                 .setPositiveButton("Select") { _, _ ->
                     run {
-                        paintBrush.strokeWidth = seekBar.progress.toFloat()
+                        currentWidth = seekBar.progress.toFloat()
+                        currentSize(currentWidth)
                     }
                 }
                 .setNegativeButton("Cancel") { _, _ ->
                     run {
-
+                        // left intentionally blank
                     }
                 }
             val dialog = dialogBuilder.create()
@@ -73,10 +71,10 @@ class MainActivity : AppCompatActivity() {
                     dialog.setMessage(width.toString() + "px")
                 }
                 override fun onStartTrackingTouch(seekBar: SeekBar) {
-
+                    // left intentionally blank
                 }
                 override fun onStopTrackingTouch(seekBar: SeekBar) {
-
+                    // left intentionally blank
                 }
             })
             dialog.show()
@@ -101,11 +99,9 @@ class MainActivity : AppCompatActivity() {
                 .setCancelable(true)
                 .setPositiveButton("Yes") { _, _ ->
                     run {
-                        pathList.clear()
-                        undonePathList.clear()
-                        colorList.clear()
-                        undoneColorList.clear()
-                        path.reset()
+                        drawings.clear()
+                        undoneDrawings.clear()
+                        drawing.path.reset()
                     }
                 }
                 .setNegativeButton("Cancel") { dialog, _ ->
@@ -149,11 +145,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun currentColor(color: Int) {
         currentBrush = color
-        path = Path()
+    }
+
+    private fun currentSize(width: Float) {
+        currentWidth = width
     }
 
     companion object {
-        var path = Path()
-        var paintBrush = Paint()
+        var drawing = Drawing()
     }
 }

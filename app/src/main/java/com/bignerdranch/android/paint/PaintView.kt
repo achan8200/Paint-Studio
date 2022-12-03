@@ -5,13 +5,11 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Path
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import com.bignerdranch.android.paint.MainActivity.Companion.paintBrush
-import com.bignerdranch.android.paint.MainActivity.Companion.path
+import com.bignerdranch.android.paint.MainActivity.Companion.drawing
 import kotlin.math.abs
 
 class PaintView : View {
@@ -22,11 +20,10 @@ class PaintView : View {
     private var touchTolerance : Float = 4f
 
     companion object {
-        var pathList = ArrayList<Path>()
-        var colorList = ArrayList<Int>()
-        var undonePathList = ArrayList<Path>()
-        var undoneColorList = ArrayList<Int>()
+        var drawings : ArrayList<Drawing> = ArrayList()
+        var undoneDrawings : ArrayList<Drawing> = ArrayList()
         var currentBrush = Color.BLACK
+        var currentWidth = 10f
     }
 
     constructor(context: Context) : this(context, null) {
@@ -40,11 +37,11 @@ class PaintView : View {
     }
 
     private fun init() {
-        paintBrush.isAntiAlias = true
-        paintBrush.color = currentBrush
-        paintBrush.style = Paint.Style.STROKE
-        paintBrush.strokeJoin = Paint.Join.ROUND
-        paintBrush.strokeWidth = 10f
+        drawing.paintBrush.isAntiAlias = true
+        drawing.paintBrush.color = currentBrush
+        drawing.paintBrush.style = Paint.Style.STROKE
+        drawing.paintBrush.strokeJoin = Paint.Join.ROUND
+        drawing.paintBrush.strokeWidth = currentWidth
 
         params = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
     }
@@ -74,11 +71,15 @@ class PaintView : View {
     }
 
     private fun touchStart(x: Float, y: Float) {
-        path = Path()
-        pathList.add(path)
-        colorList.add(currentBrush)
-        path.reset()
-        path.moveTo(x,y)
+        drawing = Drawing()
+        drawing.paintBrush.color = currentBrush
+        drawing.paintBrush.strokeWidth = currentWidth
+        drawing.paintBrush.style = Paint.Style.STROKE
+        drawing.paintBrush.strokeJoin = Paint.Join.ROUND
+        drawing.paintBrush.isAntiAlias = true
+        drawings.add(drawing)
+        drawing.path.reset()
+        drawing.path.moveTo(x,y)
         mX = x
         mY = y
     }
@@ -87,36 +88,34 @@ class PaintView : View {
         val dX : Float = abs(x - mX!!)
         val dY : Float = abs(y - mY!!)
         if (dX >= touchTolerance || dY >= touchTolerance) {
-            path.quadTo(mX!!, mY!!, (x + mX!!) / 2, (y + mY!!) / 2)
+            drawing.path.quadTo(mX!!, mY!!, (x + mX!!) / 2, (y + mY!!) / 2)
             mX = x
             mY = y
         }
     }
 
     private fun touchUp() {
-        path.lineTo(mX!!, mY!!)
+        drawing.path.lineTo(mX!!, mY!!)
+        //path.lineTo(mX!!, mY!!)
     }
 
     override fun onDraw(canvas: Canvas) {
-        for (i in pathList.indices) {
-            paintBrush.color = (colorList[i])
-            canvas.drawPath(pathList[i], paintBrush)
+        for (i in drawings.indices) {
+            canvas.drawPath(drawings[i].path, drawings[i].paintBrush)
             invalidate()
         }
     }
 
     fun setUndo() {
-        if (pathList.isNotEmpty()) {
-            undonePathList.add(pathList.removeAt(pathList.size - 1))
-            undoneColorList.add(colorList.removeAt(colorList.size - 1))
+        if (drawings.isNotEmpty()) {
+            undoneDrawings.add(drawings.removeAt(drawings.size - 1))
             invalidate()
         }
     }
 
     fun setRedo() {
-        if (undonePathList.isNotEmpty()) {
-            pathList.add(undonePathList.removeAt(undonePathList.size - 1))
-            colorList.add(undoneColorList.removeAt(undoneColorList.size - 1))
+        if (undoneDrawings.isNotEmpty()) {
+            drawings.add(undoneDrawings.removeAt(undoneDrawings.size - 1))
             invalidate()
         }
     }
