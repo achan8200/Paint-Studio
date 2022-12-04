@@ -144,7 +144,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
             val alert = dialogBuilder.create()
-            alert.setTitle("Save as Image?")
+            alert.setTitle("Save as Photo?")
             alert.show()
         }
 
