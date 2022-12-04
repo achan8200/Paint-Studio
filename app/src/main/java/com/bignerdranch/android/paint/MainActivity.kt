@@ -2,9 +2,11 @@ package com.bignerdranch.android.paint
 
 import android.graphics.Color
 import android.os.Bundle
+import android.provider.MediaStore
 import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.bignerdranch.android.paint.PaintView.Companion.currentBrush
@@ -13,6 +15,7 @@ import com.bignerdranch.android.paint.PaintView.Companion.drawings
 import com.bignerdranch.android.paint.PaintView.Companion.undoneDrawings
 import kotlinx.android.synthetic.main.paint_view.*
 import yuku.ambilwarna.AmbilWarnaDialog
+import java.util.UUID
 
 
 class MainActivity : AppCompatActivity() {
@@ -32,6 +35,9 @@ class MainActivity : AppCompatActivity() {
         val undoButton = findViewById<ImageButton>(R.id.undo)
         val redoButton = findViewById<ImageButton>(R.id.redo)
         val clearButton = findViewById<ImageButton>(R.id.clear)
+        val saveButton = findViewById<ImageButton>(R.id.save)
+
+        colorButton.setBackgroundColor(myColor)
 
         colorButton.setOnClickListener {
             currentColor(myColor)
@@ -112,6 +118,36 @@ class MainActivity : AppCompatActivity() {
             alert.setTitle("Warning")
             alert.show()
         }
+
+        saveButton.setOnClickListener {
+            val dialogBuilder = AlertDialog.Builder(this)
+
+            dialogBuilder.setCancelable(true)
+                .setPositiveButton("Yes") { _, _ ->
+                    run {
+                        paintView.setDrawingCacheEnabled(true)
+                        val imgSaved = MediaStore.Images.Media.insertImage(
+                            contentResolver,
+                            paintView.getDrawingCache(),
+                            UUID.randomUUID().toString(),
+                            "drawing"
+                        )
+                        if (imgSaved != null) {
+                            Toast.makeText(this, "Saved to photos", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                        paintView.destroyDrawingCache()
+                    }
+                }
+                .setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.cancel()
+                }
+
+            val alert = dialogBuilder.create()
+            alert.setTitle("Save as Image?")
+            alert.show()
+        }
+
     }
 
     private fun openColorPickerDialogue() {

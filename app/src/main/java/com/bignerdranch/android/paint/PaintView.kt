@@ -37,13 +37,16 @@ class PaintView : View {
     }
 
     private fun init() {
-        drawing.paintBrush.isAntiAlias = true
+        initPaintbrush()
+        params = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+    }
+
+    private fun initPaintbrush() {
         drawing.paintBrush.color = currentBrush
+        drawing.paintBrush.strokeWidth = currentWidth
         drawing.paintBrush.style = Paint.Style.STROKE
         drawing.paintBrush.strokeJoin = Paint.Join.ROUND
-        drawing.paintBrush.strokeWidth = currentWidth
-
-        params = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        drawing.paintBrush.isAntiAlias = true
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -72,11 +75,7 @@ class PaintView : View {
 
     private fun touchStart(x: Float, y: Float) {
         drawing = Drawing()
-        drawing.paintBrush.color = currentBrush
-        drawing.paintBrush.strokeWidth = currentWidth
-        drawing.paintBrush.style = Paint.Style.STROKE
-        drawing.paintBrush.strokeJoin = Paint.Join.ROUND
-        drawing.paintBrush.isAntiAlias = true
+        initPaintbrush()
         drawings.add(drawing)
         drawing.path.reset()
         drawing.path.moveTo(x,y)
@@ -96,7 +95,6 @@ class PaintView : View {
 
     private fun touchUp() {
         drawing.path.lineTo(mX!!, mY!!)
-        //path.lineTo(mX!!, mY!!)
     }
 
     override fun onDraw(canvas: Canvas) {
