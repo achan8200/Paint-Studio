@@ -74,6 +74,8 @@ class CanvasFragment : Fragment() {
         clearButton = view.findViewById(R.id.clear)
         saveButton = view.findViewById(R.id.save)
 
+        editTitle.isCursorVisible = false
+
         return view
     }
 
