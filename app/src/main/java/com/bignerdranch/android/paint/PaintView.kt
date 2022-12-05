@@ -9,7 +9,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import com.bignerdranch.android.paint.MainActivity.Companion.drawing
+import com.bignerdranch.android.paint.CanvasFragment.Companion.drawing
 import kotlin.math.abs
 
 class PaintView : View {

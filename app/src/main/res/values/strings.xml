@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">Paint</string>
+    <string name="app_name">Paint Studio</string>
+    <string name="canvas_title_hint">Untitled</string>
+    <string name="empty_gallery">Empty Gallery</string>
+    <string name="new_canvas">New Canvas</string>
+    <string name="untitled">Untitled</string>
 </resources>
