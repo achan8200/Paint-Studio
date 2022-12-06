@@ -210,6 +210,8 @@ class CanvasFragment : Fragment() {
                         drawings.clear()
                         undoneDrawings.clear()
                         drawing.path.reset()
+                        mBitmap.eraseColor(Color.WHITE)
+                        paintView.setBackgroundColor(Color.WHITE)
                     }
                 }
                 .setNegativeButton("Cancel") { dialog, _ ->
@@ -259,7 +261,7 @@ class CanvasFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStop() {
         super.onStop()
-        canvas.bitmap = bitmapToString(PaintView.mBitmap)
+        canvas.bitmap = bitmapToString(mBitmap)
         Log.i("Tag", canvas.title)
         Log.i("Tag", canvas.bitmap)
         canvasDetailViewModel.saveCanvas(canvas)
@@ -271,6 +273,7 @@ class CanvasFragment : Fragment() {
         undoneDrawings.clear()
         drawing.path.reset()
         mBitmap.eraseColor(Color.WHITE)
+        paintView.setBackgroundColor(Color.WHITE)
         (activity as AppCompatActivity?)!!.supportActionBar!!.show()
     }
 

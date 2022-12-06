@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.lang.Exception
 import java.util.*
 
 private const val TAG = "GalleryFragment"
@@ -132,8 +133,12 @@ class GalleryFragment : Fragment() {
         @RequiresApi(Build.VERSION_CODES.O)
         fun bind(canvas: Canvas) {
             this.canvas = canvas
-            canvasView.setImageBitmap(stringToBitmap(this.canvas.bitmap).changeBackgroundColor(Color.WHITE))
-            //canvasView.setImageResource(R.drawable.default_canvas)
+            val bmp : Bitmap? = stringToBitmap(this.canvas.bitmap)
+            if (bmp != null) {
+                canvasView.setImageBitmap(bmp.changeBackgroundColor(Color.WHITE))
+            } else {
+                canvasView.setImageResource(R.drawable.default_canvas)
+            }
             titleView.text = if (this.canvas.title == "") {
                 "Untitled"
             } else {
@@ -157,6 +162,7 @@ class GalleryFragment : Fragment() {
 
         override fun getItemCount() = canvases.size
 
+        @RequiresApi(Build.VERSION_CODES.O)
         override fun onBindViewHolder(holder: CanvasHolder, position: Int) {
             val canvas = canvases[position]
             holder.bind(canvas)
@@ -164,9 +170,13 @@ class GalleryFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun stringToBitmap(encodedString: String): Bitmap {
-        val encodeByte: ByteArray = Base64.getDecoder().decode(encodedString)
-        return BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.size)
+    fun stringToBitmap(encodedString: String): Bitmap? {
+        return try {
+            val encodeByte: ByteArray = Base64.getDecoder().decode(encodedString)
+            BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.size)
+        } catch (e: Exception) {
+            null
+        }
     }
 
     fun Bitmap.changeBackgroundColor(color: Int): Bitmap {

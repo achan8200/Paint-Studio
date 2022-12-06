@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -12,6 +13,7 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import com.bignerdranch.android.paint.CanvasFragment.Companion.bitmap
 import com.bignerdranch.android.paint.CanvasFragment.Companion.drawing
+import kotlinx.android.synthetic.main.fragment_canvas.view.*
 import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
@@ -69,6 +71,8 @@ class PaintView : View {
             Bitmap.createBitmap(this.width, this.height, Bitmap.Config.ARGB_8888)
         }
         mBitmap = mBitmap.copy(Bitmap.Config.ARGB_8888, true)
+        paintView.background = BitmapDrawable(resources, mBitmap)
+        mCanvas.setBitmap(mBitmap)
     }
 
     @SuppressLint("ClickableViewAccessibility")
