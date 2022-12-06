@@ -28,7 +28,7 @@ class PaintView : View {
 
     companion object {
         lateinit var mBitmap : Bitmap
-        var mCanvas : Canvas = Canvas()
+        //var mCanvas : Canvas = Canvas()
         var drawings : ArrayList<Drawing> = ArrayList()
         var undoneDrawings : ArrayList<Drawing> = ArrayList()
         var currentBrush = Color.BLACK
@@ -73,7 +73,7 @@ class PaintView : View {
         mBitmap = mBitmap.copy(Bitmap.Config.ARGB_8888, true)
         mBitmap = mBitmap.changeBackgroundColor(Color.WHITE)
         paintView.background = BitmapDrawable(resources, mBitmap)
-        mCanvas.setBitmap(mBitmap)
+        //mCanvas.setBitmap(mBitmap)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -125,9 +125,9 @@ class PaintView : View {
     }
 
     override fun onDraw(canvas: Canvas) {
-        mCanvas.setBitmap(mBitmap)
+        //mCanvas.setBitmap(mBitmap)
         for (i in drawings.indices) {
-            mCanvas.drawPath(drawings[i].path, drawings[i].paintBrush) // <--- Comment this out to enable undo/redo functionality
+            //mCanvas.drawPath(drawings[i].path, drawings[i].paintBrush) // <--- Comment this out to enable undo/redo functionality
             canvas.drawPath(drawings[i].path, drawings[i].paintBrush) // Otherwise, leave it so any drawn paths are saved in the database
             //canvas.drawBitmap(mBitmap, 0f, 0f, drawing.paintBrush)
             invalidate()

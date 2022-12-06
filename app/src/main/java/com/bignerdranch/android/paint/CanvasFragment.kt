@@ -3,7 +3,6 @@ package com.bignerdranch.android.paint
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -23,17 +22,16 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import kotlinx.android.synthetic.main.fragment_canvas.*
-import com.bignerdranch.android.paint.PaintView.Companion.drawings
-import com.bignerdranch.android.paint.PaintView.Companion.undoneDrawings
 import com.bignerdranch.android.paint.PaintView.Companion.currentBrush
 import com.bignerdranch.android.paint.PaintView.Companion.currentWidth
+import com.bignerdranch.android.paint.PaintView.Companion.drawings
 import com.bignerdranch.android.paint.PaintView.Companion.mBitmap
+import com.bignerdranch.android.paint.PaintView.Companion.undoneDrawings
+import kotlinx.android.synthetic.main.fragment_canvas.*
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 import yuku.ambilwarna.AmbilWarnaDialog
 import java.io.ByteArrayOutputStream
-import java.lang.Exception
 import java.util.*
 
 private const val ARG_CANVAS_ID = "canvas_id"
@@ -245,6 +243,10 @@ class CanvasFragment : Fragment() {
                             Toast.makeText(mContext, "Saved to photos", Toast.LENGTH_SHORT)
                                 .show()
                         }
+                        else {
+                            Toast.makeText(mContext, "Error, unable to save to photos", Toast.LENGTH_SHORT)
+                                .show()
+                        }
                         paintView.destroyDrawingCache()
                     }
                 }
@@ -261,7 +263,8 @@ class CanvasFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStop() {
         super.onStop()
-        canvas.bitmap = bitmapToString(mBitmap)
+        val bmp : Bitmap = convertToBitmap(paintView)
+        canvas.bitmap = bitmapToString(bmp)
         Log.i("Tag", canvas.title)
         Log.i("Tag", canvas.bitmap)
         canvasDetailViewModel.saveCanvas(canvas)
@@ -289,6 +292,11 @@ class CanvasFragment : Fragment() {
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
         val b = stream.toByteArray()
         return Base64.getEncoder().encodeToString(b)
+    }
+
+    private fun convertToBitmap(view: View): Bitmap {
+        view.isDrawingCacheEnabled = true
+        return view.drawingCache
     }
 
     private fun openColorPickerDialogue() {
