@@ -11,9 +11,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/paintbrush"
+        android:icon="@mipmap/app_paintbrush"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/paintbrush_round"
+        android:roundIcon="@mipmap/app_paintbrush_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Paint"
         tools:targetApi="31">
