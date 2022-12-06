@@ -127,10 +127,12 @@ class PaintView : View {
     override fun onDraw(canvas: Canvas) {
         mCanvas.setBitmap(mBitmap)
         for (i in drawings.indices) {
-            mCanvas.drawPath(drawings[i].path, drawings[i].paintBrush)
-            canvas.drawBitmap(mBitmap, 0f, 0f, drawing.paintBrush)
+            mCanvas.drawPath(drawings[i].path, drawings[i].paintBrush) // <--- Comment this out to enable undo/redo functionality
+            canvas.drawPath(drawings[i].path, drawings[i].paintBrush) // Otherwise, leave it so any drawn paths are saved in the database
+            //canvas.drawBitmap(mBitmap, 0f, 0f, drawing.paintBrush)
             invalidate()
         }
+        //canvas.drawPath(drawing.path, drawing.paintBrush)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
