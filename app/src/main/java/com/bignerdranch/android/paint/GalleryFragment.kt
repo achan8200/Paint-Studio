@@ -1,10 +1,15 @@
 package com.bignerdranch.android.paint
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
@@ -124,9 +129,11 @@ class GalleryFragment : Fragment() {
             itemView.setOnClickListener(this)
         }
 
+        @RequiresApi(Build.VERSION_CODES.O)
         fun bind(canvas: Canvas) {
             this.canvas = canvas
-            canvasView.setImageResource(R.drawable.default_canvas)
+            canvasView.setImageBitmap(stringToBitmap(this.canvas.bitmap).changeBackgroundColor(Color.WHITE))
+            //canvasView.setImageResource(R.drawable.default_canvas)
             titleView.text = if (this.canvas.title == "") {
                 "Untitled"
             } else {
@@ -154,6 +161,21 @@ class GalleryFragment : Fragment() {
             val canvas = canvases[position]
             holder.bind(canvas)
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun stringToBitmap(encodedString: String): Bitmap {
+        val encodeByte: ByteArray = Base64.getDecoder().decode(encodedString)
+        return BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.size)
+    }
+
+    fun Bitmap.changeBackgroundColor(color: Int): Bitmap {
+        val newBitmap = Bitmap.createBitmap(width, height, config)
+        val canvas = android.graphics.Canvas(newBitmap)
+        canvas.drawColor(color)
+        canvas.drawBitmap(this, 0F, 0F, null)
+        recycle()
+        return newBitmap
     }
 
     companion object {

@@ -2,14 +2,19 @@ package com.bignerdranch.android.paint
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.*
 import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
+import android.os.Build
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
+import com.bignerdranch.android.paint.CanvasFragment.Companion.bitmap
 import com.bignerdranch.android.paint.CanvasFragment.Companion.drawing
+import java.lang.Exception
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 class PaintView : View {
@@ -20,6 +25,8 @@ class PaintView : View {
     private var touchTolerance : Float = 4f
 
     companion object {
+        lateinit var mBitmap : Bitmap
+        var mCanvas : Canvas = Canvas()
         var drawings : ArrayList<Drawing> = ArrayList()
         var undoneDrawings : ArrayList<Drawing> = ArrayList()
         var currentBrush = Color.BLACK
@@ -47,6 +54,21 @@ class PaintView : View {
         drawing.paintBrush.style = Paint.Style.STROKE
         drawing.paintBrush.strokeJoin = Paint.Join.ROUND
         drawing.paintBrush.isAntiAlias = true
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        mBitmap = try {
+            if (bitmap == "") {
+                Bitmap.createBitmap(this.width, this.height, Bitmap.Config.ARGB_8888)
+            } else {
+                stringToBitmap(bitmap)
+            }
+        } catch (e: Exception) {
+            Bitmap.createBitmap(this.width, this.height, Bitmap.Config.ARGB_8888)
+        }
+        mBitmap = mBitmap.copy(Bitmap.Config.ARGB_8888, true)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -98,10 +120,18 @@ class PaintView : View {
     }
 
     override fun onDraw(canvas: Canvas) {
+        mCanvas.setBitmap(mBitmap)
         for (i in drawings.indices) {
-            canvas.drawPath(drawings[i].path, drawings[i].paintBrush)
+            mCanvas.drawPath(drawings[i].path, drawings[i].paintBrush)
+            canvas.drawBitmap(mBitmap, 0f, 0f, drawing.paintBrush)
             invalidate()
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun stringToBitmap(encodedString: String): Bitmap {
+        val encodeByte: ByteArray = Base64.getDecoder().decode(encodedString)
+        return BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.size)
     }
 
     fun setUndo() {

@@ -8,5 +8,5 @@ import java.util.*
 @Entity
 data class Canvas(@PrimaryKey val id: UUID = UUID.randomUUID(),
                   var title: String = "",
-                //var bitmap: Bitmap ?= null
+                  var bitmap: String = ""
                     )

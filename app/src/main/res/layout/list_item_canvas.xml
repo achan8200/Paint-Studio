@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="180dp">
+    android:layout_height="200dp">
     <ImageView
         android:id="@+id/canvas"
         android:layout_width="match_parent"
@@ -16,5 +16,6 @@
         android:layout_below="@id/canvas"
         android:text="@string/untitled"
         android:textSize="20sp"
+        android:paddingTop="15dp"
         android:textAlignment="center" />
 </RelativeLayout>

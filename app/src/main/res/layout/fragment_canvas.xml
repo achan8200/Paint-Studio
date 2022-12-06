@@ -17,9 +17,6 @@
         android:textColor="@color/second"
         android:background="@color/background"
         android:textAlignment="textStart"
-        android:focusableInTouchMode="true"
-        android:focusable="true"
-        android:clickable="true"
         tools:ignore="RtlSymmetry" />
 
     <LinearLayout
@@ -100,8 +97,9 @@
 
     <com.bignerdranch.android.paint.PaintView
         android:id="@+id/paintView"
-        android:background="#FFFFFFFF"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar" />
+        android:layout_below="@id/toolbar"
+        android:background="#FFFFFFFF"
+        android:focusable="true"/>
 </RelativeLayout>

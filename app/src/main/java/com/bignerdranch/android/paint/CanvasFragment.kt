@@ -2,11 +2,15 @@ package com.bignerdranch.android.paint
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,17 +18,23 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.fragment_canvas.*
+import com.bignerdranch.android.paint.PaintView.Companion.drawings
+import com.bignerdranch.android.paint.PaintView.Companion.undoneDrawings
+import com.bignerdranch.android.paint.PaintView.Companion.currentBrush
+import com.bignerdranch.android.paint.PaintView.Companion.currentWidth
+import com.bignerdranch.android.paint.PaintView.Companion.mBitmap
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
-import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.setEventListener
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 import yuku.ambilwarna.AmbilWarnaDialog
+import java.io.ByteArrayOutputStream
+import java.lang.Exception
 import java.util.*
-
 
 private const val ARG_CANVAS_ID = "canvas_id"
 
@@ -41,7 +51,7 @@ class CanvasFragment : Fragment() {
     private lateinit var redoButton: ImageButton
     private lateinit var clearButton: ImageButton
     private lateinit var saveButton: ImageButton
-    private var myColor = PaintView.currentBrush
+    private var myColor = currentBrush
 
     private val canvasDetailViewModel: CanvasDetailViewModel by lazy {
         ViewModelProviders.of(this)[CanvasDetailViewModel::class.java]
@@ -79,6 +89,7 @@ class CanvasFragment : Fragment() {
         return view
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         canvasDetailViewModel.canvasLiveData.observe(
@@ -89,11 +100,6 @@ class CanvasFragment : Fragment() {
                 updateUI()
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        (activity as AppCompatActivity?)!!.supportActionBar!!.show()
     }
 
     override fun onStart() {
@@ -120,7 +126,7 @@ class CanvasFragment : Fragment() {
             }
 
             override fun afterTextChanged(sequence: Editable?) {
-
+                canvas.title = sequence.toString()
             }
         }
 
@@ -131,7 +137,7 @@ class CanvasFragment : Fragment() {
 
         editTitle.addTextChangedListener(titleWatcher)
 
-        colorButton.setBackgroundColor(PaintView.currentBrush)
+        colorButton.setBackgroundColor(currentBrush)
 
         colorButton.setOnClickListener {
             currentColor(myColor)
@@ -148,15 +154,15 @@ class CanvasFragment : Fragment() {
             val seekBar = SeekBar(mContext)
 
             seekBar.max = 100
-            seekBar.progress = PaintView.currentWidth.toInt()
+            seekBar.progress = currentWidth.toInt()
 
             dialogBuilder.setTitle("Brush Width")
-                .setMessage(PaintView.currentWidth.toInt().toString() + "px")
+                .setMessage(currentWidth.toInt().toString() + "px")
                 .setView(seekBar)
                 .setPositiveButton("Select") { _, _ ->
                     run {
-                        PaintView.currentWidth = seekBar.progress.toFloat()
-                        currentSize(PaintView.currentWidth)
+                        currentWidth = seekBar.progress.toFloat()
+                        currentSize(currentWidth)
                     }
                 }
                 .setNegativeButton("Cancel") { _, _ ->
@@ -201,8 +207,8 @@ class CanvasFragment : Fragment() {
                 .setCancelable(true)
                 .setPositiveButton("Yes") { _, _ ->
                     run {
-                        PaintView.drawings.clear()
-                        PaintView.undoneDrawings.clear()
+                        drawings.clear()
+                        undoneDrawings.clear()
                         drawing.path.reset()
                     }
                 }
@@ -217,19 +223,20 @@ class CanvasFragment : Fragment() {
 
         saveButton.setOnClickListener {
             val dialogBuilder = AlertDialog.Builder(mContext)
+            var title = canvas.title
 
             dialogBuilder.setCancelable(true)
                 .setPositiveButton("Yes") { _, _ ->
                     run {
-                        if (canvas.title == "") {
-                            canvas.title = "Untitled"
+                        if (title.replace("\\s".toRegex(), "") == "") {
+                            title = "Untitled"
                         }
                         paintView.setDrawingCacheEnabled(true)
                         val imgSaved = MediaStore.Images.Media.insertImage(
                             mContext.contentResolver,
                             paintView.getDrawingCache(),
                             //UUID.randomUUID().toString(),
-                            canvas.title.replace("\\s".toRegex(), "-"),
+                            title.replace("\\s".toRegex(), "-"),
                             "drawing"
                         )
                         if (imgSaved != null) {
@@ -249,13 +256,36 @@ class CanvasFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onStop() {
         super.onStop()
+        canvas.bitmap = bitmapToString(PaintView.mBitmap)
+        Log.i("Tag", canvas.title)
+        Log.i("Tag", canvas.bitmap)
         canvasDetailViewModel.saveCanvas(canvas)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        drawings.clear()
+        undoneDrawings.clear()
+        drawing.path.reset()
+        mBitmap.eraseColor(Color.WHITE)
+        (activity as AppCompatActivity?)!!.supportActionBar!!.show()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun updateUI() {
         editTitle.setText(canvas.title)
+        bitmap = canvas.bitmap
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun bitmapToString(bitmap: Bitmap): String {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        val b = stream.toByteArray()
+        return Base64.getEncoder().encodeToString(b)
     }
 
     private fun openColorPickerDialogue() {
@@ -288,15 +318,16 @@ class CanvasFragment : Fragment() {
     }
 
     private fun currentColor(color: Int) {
-        PaintView.currentBrush = color
+        currentBrush = color
     }
 
     private fun currentSize(width: Float) {
-        PaintView.currentWidth = width
+        currentWidth = width
     }
 
     companion object {
 
+        lateinit var bitmap: String
         var drawing = Drawing()
 
         fun newInstance(canvasId: UUID): CanvasFragment {
