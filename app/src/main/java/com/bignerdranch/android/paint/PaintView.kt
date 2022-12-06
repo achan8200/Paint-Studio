@@ -71,6 +71,7 @@ class PaintView : View {
             Bitmap.createBitmap(this.width, this.height, Bitmap.Config.ARGB_8888)
         }
         mBitmap = mBitmap.copy(Bitmap.Config.ARGB_8888, true)
+        mBitmap = mBitmap.changeBackgroundColor(Color.WHITE)
         paintView.background = BitmapDrawable(resources, mBitmap)
         mCanvas.setBitmap(mBitmap)
     }
@@ -136,6 +137,15 @@ class PaintView : View {
     fun stringToBitmap(encodedString: String): Bitmap {
         val encodeByte: ByteArray = Base64.getDecoder().decode(encodedString)
         return BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.size)
+    }
+
+    private fun Bitmap.changeBackgroundColor(color: Int): Bitmap {
+        val newBitmap = Bitmap.createBitmap(width, height, config)
+        val canvas = Canvas(newBitmap)
+        canvas.drawColor(color)
+        canvas.drawBitmap(this, 0F, 0F, null)
+        recycle()
+        return newBitmap
     }
 
     fun setUndo() {
