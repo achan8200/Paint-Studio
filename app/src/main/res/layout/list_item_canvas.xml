@@ -17,5 +17,6 @@
         android:text="@string/untitled"
         android:textSize="20sp"
         android:paddingTop="15dp"
+        android:lineSpacingExtra="10sp"
         android:textAlignment="center" />
 </RelativeLayout>

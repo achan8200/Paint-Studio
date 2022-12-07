@@ -14,10 +14,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import java.lang.Exception
+import kotlinx.android.synthetic.main.list_item_canvas.*
 import java.util.*
 
 private const val TAG = "GalleryFragment"
+private const val NON_THIN = "[^iIl1.,']"
 
 class GalleryFragment : Fragment() {
 
@@ -142,7 +143,7 @@ class GalleryFragment : Fragment() {
             titleView.text = if (this.canvas.title == "") {
                 "Untitled"
             } else {
-                this.canvas.title
+                ellipsize(this.canvas.title)
             }
         }
 
@@ -186,6 +187,28 @@ class GalleryFragment : Fragment() {
         canvas.drawBitmap(this, 0F, 0F, null)
         recycle()
         return newBitmap
+    }
+
+    private fun textWidth(str: String): Int {
+        return (str.length - str.replace(NON_THIN.toRegex(), "").length / 2)
+    }
+
+    private fun ellipsize(text: String, max: Int = 20): String {
+        if (textWidth(text) <= max) {
+            return text
+        }
+        var end = text.lastIndexOf(' ', max - 1)
+        if (end == -1) {
+            return text.substring(0, max - 1) + "…"
+        }
+        var newEnd = end
+        do {
+            end = newEnd
+            newEnd = text.indexOf(' ', end + 1)
+            // No more spaces.
+            if (newEnd == -1) newEnd = text.length
+        } while (textWidth(text.substring(0, newEnd) + "…") < max)
+        return text.substring(0, end) + "…"
     }
 
     companion object {
