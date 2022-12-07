@@ -25,18 +25,22 @@ class CanvasTypeConverters {
     /*
     @RequiresApi(Build.VERSION_CODES.O)
     @TypeConverter
-    fun BitMapToString(bitmap: Bitmap): String {
-        val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
-        val b = baos.toByteArray()
+    fun bitmapToString(bitmap: Bitmap): String {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        val b = stream.toByteArray()
         return Base64.getEncoder().encodeToString(b)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     @TypeConverter
-    fun StringToBitMap(encodedString: String?): Bitmap? {
-        val encodeByte: ByteArray = Base64.getDecoder().decode(encodedString)
-        return BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.size)
+    fun stringToBitmap(encodedString: String): Bitmap? {
+        return try {
+            val encodeByte: ByteArray = Base64.getDecoder().decode(encodedString)
+            BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.size)
+        } catch (e: Exception) {
+            null
+        }
     }
 
      */

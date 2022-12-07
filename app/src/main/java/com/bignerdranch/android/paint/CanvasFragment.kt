@@ -1,6 +1,5 @@
 package com.bignerdranch.android.paint
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -9,7 +8,6 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -63,7 +61,6 @@ class CanvasFragment : Fragment() {
         (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
     }
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -87,7 +84,6 @@ class CanvasFragment : Fragment() {
         return view
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         canvasDetailViewModel.canvasLiveData.observe(
@@ -144,7 +140,6 @@ class CanvasFragment : Fragment() {
 
         paintbrushButton.setOnClickListener {
             currentColor(myColor)
-            paintbrushButton.isEnabled = false
         }
 
         brushWidthButton.setOnClickListener {
@@ -187,7 +182,6 @@ class CanvasFragment : Fragment() {
 
         eraserButton.setOnClickListener {
             currentColor(Color.WHITE)
-            paintbrushButton.isEnabled = true
         }
 
         undoButton.setOnClickListener {
@@ -263,10 +257,9 @@ class CanvasFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStop() {
         super.onStop()
+        canvas.title = editTitle.text.toString()
         val bmp : Bitmap = convertToBitmap(paintView)
         canvas.bitmap = bitmapToString(bmp)
-        Log.i("Tag", canvas.title)
-        Log.i("Tag", canvas.bitmap)
         canvasDetailViewModel.saveCanvas(canvas)
     }
 
@@ -280,7 +273,6 @@ class CanvasFragment : Fragment() {
         (activity as AppCompatActivity?)!!.supportActionBar!!.show()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun updateUI() {
         editTitle.setText(canvas.title)
         bitmap = canvas.bitmap
