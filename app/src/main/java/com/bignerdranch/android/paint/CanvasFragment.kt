@@ -1,6 +1,7 @@
 package com.bignerdranch.android.paint
 
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Build
@@ -25,8 +26,9 @@ import com.bignerdranch.android.paint.PaintView.Companion.currentWidth
 import com.bignerdranch.android.paint.PaintView.Companion.drawings
 import com.bignerdranch.android.paint.PaintView.Companion.mBitmap
 import com.bignerdranch.android.paint.PaintView.Companion.undoneDrawings
+import com.flask.colorpicker.ColorPickerView
+import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import com.mrudultora.colorpicker.ColorPickerPopUp
-import com.mrudultora.colorpicker.ColorPickerPopUp.OnPickColorListener
 import kotlinx.android.synthetic.main.fragment_canvas.*
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
@@ -226,10 +228,10 @@ class CanvasFragment : Fragment() {
                         if (title.replace("\\s".toRegex(), "") == "") {
                             title = "Untitled"
                         }
-                        paintView.setDrawingCacheEnabled(true)
+                        paintView.isDrawingCacheEnabled = true
                         val imgSaved = MediaStore.Images.Media.insertImage(
                             mContext.contentResolver,
-                            paintView.getDrawingCache(),
+                            paintView.drawingCache,
                             //UUID.randomUUID().toString(),
                             title.replace("\\s".toRegex(), "-"),
                             "drawing"
@@ -293,38 +295,8 @@ class CanvasFragment : Fragment() {
     }
 
     private fun openColorPickerDialogue() {
-        val colorPickerPopUp = ColorPickerPopUp(mContext)
-
-        colorPickerPopUp.setShowAlpha(true)
-            .setDefaultColor(myColor)
-            .setDialogTitle("")
-            .setPositiveButtonText("Ok")
-            .setNegativeButtonText("Cancel")
-            .setOnPickColorListener(object : OnPickColorListener {
-                override fun onColorPicked(color: Int) {
-                    colorButton.setBackgroundColor(color)
-                    currentColor(color)
-                    myColor = color
-                }
-                override fun onCancel() {
-                    colorPickerPopUp.dismissDialog() // Dismiss the dialog.
-                }
-            })
-            .show()
         /*
-        ColorPickerDialog
-            .Builder(this)
-            .setColorShape(ColorShape.SQUARE)
-            .setDefaultColor(myColor)
-            .setColorListener { color, _ ->
-                colorButton.setBackgroundColor(color)
-                currentColor(color)
-                myColor = color
-            }
-            .show()
-         */
-        /*
-        val colorPickerDialogue = AmbilWarnaDialog(mContext, myColor,
+        val colorPickerDialogue = AmbilWarnaDialog(mContext, myColor,               //Includes: preview and hue channel
             object : AmbilWarnaDialog.OnAmbilWarnaListener {
                 override fun onCancel(dialog: AmbilWarnaDialog?) {
                 }
@@ -338,6 +310,53 @@ class CanvasFragment : Fragment() {
         colorPickerDialogue.show()
          */
 
+        val colorPickerPopUp = ColorPickerPopUp(mContext)           //Includes: preview, hue and alpha channels
+        colorPickerPopUp.setShowAlpha(true)
+            .setDefaultColor(myColor)
+            .setDialogTitle("")
+            .setPositiveButtonText("Ok")
+            .setNegativeButtonText("Cancel")
+            .setOnPickColorListener(object : ColorPickerPopUp.OnPickColorListener {
+                override fun onColorPicked(color: Int) {
+                    colorButton.setBackgroundColor(color)
+                    currentColor(color)
+                    myColor = color
+                }
+                override fun onCancel() {
+                    colorPickerPopUp.dismissDialog()
+                }
+            })
+            .show()
+
+        /*
+        ColorPickerDialogBuilder                                    //Includes: color wheel, value and alpha channels, but limited selections
+            .with(mContext)
+            .setTitle("Choose color")
+            .initialColor(myColor)
+            .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+            .density(12)
+            .setPositiveButton("ok") { _: DialogInterface?, selectedColor: Int, _: Array<Int?>? ->
+                colorButton.setBackgroundColor(selectedColor)
+                currentColor(selectedColor)
+                myColor = selectedColor
+            }
+            .setNegativeButton("cancel") { _: DialogInterface?, _: Int -> }
+            .build()
+            .show()
+        */
+        /*
+        com.github.dhaval2404.colorpicker.ColorPickerDialog                 //Includes: preview and recent colors, but can't choose black
+            .Builder(mContext)
+            .setColorShape(com.github.dhaval2404.colorpicker.model.ColorShape.SQAURE)
+            .setDefaultColor(myColor)
+            .setTitle("Choose Color")
+            .setColorListener { color, _ ->
+                colorButton.setBackgroundColor(color)
+                currentColor(color)
+                myColor = color
+            }
+            .show()
+          */
     }
 
     private fun currentColor(color: Int) {
