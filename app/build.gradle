@@ -45,6 +45,7 @@ dependencies {
     implementation 'com.github.QuadFlask:colorpicker:0.0.15'
     implementation 'com.github.yukuku:ambilwarna:2.0.1'
     implementation 'com.github.Dhaval2404:ColorPicker:2.3'
+    implementation 'com.github.mrudultora:Colorpicker:1.2.0'
     implementation 'net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:3.0.0-RC3'
     def room_version = "2.4.3"
     implementation "androidx.room:room-runtime:$room_version"

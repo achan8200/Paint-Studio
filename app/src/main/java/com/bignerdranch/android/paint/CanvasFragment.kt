@@ -25,10 +25,11 @@ import com.bignerdranch.android.paint.PaintView.Companion.currentWidth
 import com.bignerdranch.android.paint.PaintView.Companion.drawings
 import com.bignerdranch.android.paint.PaintView.Companion.mBitmap
 import com.bignerdranch.android.paint.PaintView.Companion.undoneDrawings
+import com.mrudultora.colorpicker.ColorPickerPopUp
+import com.mrudultora.colorpicker.ColorPickerPopUp.OnPickColorListener
 import kotlinx.android.synthetic.main.fragment_canvas.*
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
-import yuku.ambilwarna.AmbilWarnaDialog
 import java.io.ByteArrayOutputStream
 import java.util.*
 
@@ -292,6 +293,24 @@ class CanvasFragment : Fragment() {
     }
 
     private fun openColorPickerDialogue() {
+        val colorPickerPopUp = ColorPickerPopUp(mContext)
+
+        colorPickerPopUp.setShowAlpha(true)
+            .setDefaultColor(myColor)
+            .setDialogTitle("")
+            .setPositiveButtonText("Ok")
+            .setNegativeButtonText("Cancel")
+            .setOnPickColorListener(object : OnPickColorListener {
+                override fun onColorPicked(color: Int) {
+                    colorButton.setBackgroundColor(color)
+                    currentColor(color)
+                    myColor = color
+                }
+                override fun onCancel() {
+                    colorPickerPopUp.dismissDialog() // Dismiss the dialog.
+                }
+            })
+            .show()
         /*
         ColorPickerDialog
             .Builder(this)
@@ -304,7 +323,7 @@ class CanvasFragment : Fragment() {
             }
             .show()
          */
-
+        /*
         val colorPickerDialogue = AmbilWarnaDialog(mContext, myColor,
             object : AmbilWarnaDialog.OnAmbilWarnaListener {
                 override fun onCancel(dialog: AmbilWarnaDialog?) {
@@ -317,6 +336,7 @@ class CanvasFragment : Fragment() {
                 }
             })
         colorPickerDialogue.show()
+         */
 
     }
 
