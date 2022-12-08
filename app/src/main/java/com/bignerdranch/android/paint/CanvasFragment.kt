@@ -223,13 +223,14 @@ class CanvasFragment : Fragment() {
         saveButton.setOnClickListener {
             val dialogBuilder = AlertDialog.Builder(mContext)
             var title = canvas.title
+            if (title.replace("\\s".toRegex(), "") == "") {
+                title = "Untitled"
+            }
 
-            dialogBuilder.setCancelable(true)
+            dialogBuilder.setMessage("Image will be saved as \'$title.jpg\'")
+                .setCancelable(true)
                 .setPositiveButton("Yes") { _, _ ->
                     run {
-                        if (title.replace("\\s".toRegex(), "") == "") {
-                            title = "Untitled"
-                        }
                         paintView.isDrawingCacheEnabled = true
                         val imgSaved = MediaStore.Images.Media.insertImage(
                             mContext.contentResolver,
@@ -269,6 +270,11 @@ class CanvasFragment : Fragment() {
                 .setCancelable(true)
                 .setPositiveButton("Yes") { _, _ ->
                     run {
+                        drawings.clear()
+                        undoneDrawings.clear()
+                        drawing.path.reset()
+                        mBitmap.eraseColor(Color.WHITE)
+                        paintView.setBackgroundColor(Color.WHITE)
                         canvasDetailViewModel.deleteCanvas(this.canvas)
                         val i = Intent(activity, MainActivity::class.java)
                         startActivity(i)
