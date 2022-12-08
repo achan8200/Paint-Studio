@@ -23,4 +23,8 @@ class CanvasDetailViewModel : ViewModel() {
     fun saveCanvas(canvas: Canvas) {
         canvasRepository.updateCanvas(canvas)
     }
+
+    fun deleteCanvas(canvas: Canvas) {
+        canvasRepository.deleteCanvas(canvas)
+    }
 }

@@ -1,7 +1,7 @@
 package com.bignerdranch.android.paint
 
 import android.content.Context
-import android.content.DialogInterface
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Build
@@ -50,6 +50,7 @@ class CanvasFragment : Fragment() {
     private lateinit var redoButton: ImageButton
     private lateinit var clearButton: ImageButton
     private lateinit var saveButton: ImageButton
+    private lateinit var deleteButton: ImageButton
     private var myColor = currentBrush
 
     private val canvasDetailViewModel: CanvasDetailViewModel by lazy {
@@ -81,6 +82,7 @@ class CanvasFragment : Fragment() {
         redoButton = view.findViewById(R.id.redo)
         clearButton = view.findViewById(R.id.clear)
         saveButton = view.findViewById(R.id.save)
+        deleteButton = view.findViewById(R.id.delete)
 
         editTitle.isCursorVisible = false
 
@@ -198,7 +200,7 @@ class CanvasFragment : Fragment() {
         clearButton.setOnClickListener {
             val dialogBuilder = AlertDialog.Builder(mContext)
 
-            dialogBuilder.setMessage("Do you want to remove all strokes permanently?")
+            dialogBuilder.setMessage("Remove all strokes permanently?")
                 .setCancelable(true)
                 .setPositiveButton("Yes") { _, _ ->
                     run {
@@ -253,6 +255,31 @@ class CanvasFragment : Fragment() {
 
             val alert = dialogBuilder.create()
             alert.setTitle("Save as Photo?")
+            alert.show()
+        }
+
+        deleteButton.setOnClickListener {
+            val dialogBuilder = AlertDialog.Builder(mContext)
+            var title = canvas.title
+            if (title.replace("\\s".toRegex(), "") == "") {
+                title = "Untitled"
+            }
+
+            dialogBuilder.setMessage("Delete the canvas \'$title\'?")
+                .setCancelable(true)
+                .setPositiveButton("Yes") { _, _ ->
+                    run {
+                        canvasDetailViewModel.deleteCanvas(this.canvas)
+                        val i = Intent(activity, MainActivity::class.java)
+                        startActivity(i)
+                    }
+                }
+                .setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.cancel()
+                }
+
+            val alert = dialogBuilder.create()
+            alert.setTitle("Confirm Deletion")
             alert.show()
         }
     }

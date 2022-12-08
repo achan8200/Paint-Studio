@@ -36,6 +36,12 @@ class CanvasRepository private constructor(context: Context) {
         }
     }
 
+    fun deleteCanvas(canvas: Canvas) {
+        executor.execute {
+            canvasDao.deleteCanvas(canvas)
+        }
+    }
+
     companion object {
         private var INSTANCE: CanvasRepository? = null
 

@@ -138,7 +138,7 @@ class GalleryFragment : Fragment() {
             if (bmp != null) {
                 canvasView.setImageBitmap(bmp.changeBackgroundColor(Color.WHITE))
             } else {
-                canvasView.setImageResource(R.drawable.default_canvas)
+                canvasView.setImageResource(R.drawable.default_canvas_2)
             }
             titleView.text = if (this.canvas.title == "") {
                 "Untitled"
