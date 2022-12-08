@@ -140,7 +140,7 @@ class GalleryFragment : Fragment() {
             } else {
                 canvasView.setImageResource(R.drawable.default_canvas_2)
             }
-            titleView.text = if (this.canvas.title == "") {
+            titleView.text = if (this.canvas.title.replace("\\s".toRegex(), "") == "") {
                 "Untitled"
             } else {
                 ellipsize(this.canvas.title)

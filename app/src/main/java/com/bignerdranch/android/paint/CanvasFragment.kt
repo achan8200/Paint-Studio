@@ -223,8 +223,10 @@ class CanvasFragment : Fragment() {
         saveButton.setOnClickListener {
             val dialogBuilder = AlertDialog.Builder(mContext)
             var title = canvas.title
-            if (title.replace("\\s".toRegex(), "") == "") {
-                title = "Untitled"
+            title = if (title.replace("\\s".toRegex(), "") == "") {
+                "Untitled"
+            } else {
+                title.replace("\\s".toRegex(), "-")
             }
 
             dialogBuilder.setMessage("Image will be saved as \'$title.jpg\'")
@@ -236,7 +238,7 @@ class CanvasFragment : Fragment() {
                             mContext.contentResolver,
                             paintView.drawingCache,
                             //UUID.randomUUID().toString(),
-                            title.replace("\\s".toRegex(), "-"),
+                            title,
                             "drawing"
                         )
                         if (imgSaved != null) {
