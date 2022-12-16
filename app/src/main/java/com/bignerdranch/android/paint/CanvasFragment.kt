@@ -106,11 +106,44 @@ class CanvasFragment : Fragment() {
         return view
     }
     private fun saveCanvas() {
-        val bitmap = mBitmap
-        val bytes = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path = MediaStore.Images.Media.insertImage(mContext.contentResolver, bitmap, "Title", null)
-        Toast.makeText(mContext, "Saved", Toast.LENGTH_SHORT).show()
+        val dialogBuilder = AlertDialog.Builder(mContext)
+        var title = canvas.title
+        title = if (title.replace("\\s".toRegex(), "") == "") {
+            "Untitled"
+        } else {
+            title.replace("\\s".toRegex(), "-")
+        }
+
+        dialogBuilder.setMessage("Image will be saved as \'$title.jpg\'")
+            .setCancelable(true)
+            .setPositiveButton("Yes") { _, _ ->
+                run {
+                    paintView.isDrawingCacheEnabled = true
+                    val imgSaved = MediaStore.Images.Media.insertImage(
+                        mContext.contentResolver,
+                        paintView.drawingCache,
+                        //UUID.randomUUID().toString(),
+                        title,
+                        "drawing"
+                    )
+                    if (imgSaved != null) {
+                        Toast.makeText(mContext, "Saved to photos", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    else {
+                        Toast.makeText(mContext, "Error, unable to save to photos", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    paintView.destroyDrawingCache()
+                }
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.cancel()
+            }
+
+        val alert = dialogBuilder.create()
+        alert.setTitle("Save as Photo?")
+        alert.show()
     }
     private fun deleteCanvas() {
         val dialogBuilder = AlertDialog.Builder(mContext)
