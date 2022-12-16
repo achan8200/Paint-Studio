@@ -1,5 +1,6 @@
 package com.bignerdranch.android.paint
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.FragmentTransaction
@@ -7,6 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -20,6 +22,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.bignerdranch.android.paint.PaintView.Companion.currentBrush
@@ -50,6 +53,7 @@ class CanvasFragment : Fragment() {
     private lateinit var undoButton: ImageButton
     private lateinit var redoButton: ImageButton
     private lateinit var clearButton: ImageButton
+    private lateinit var loadingScreen: ConstraintLayout
     //private lateinit var saveButton: ImageButton
     //private lateinit var deleteButton: ImageButton
     private lateinit var moreButton: ImageButton
@@ -73,6 +77,12 @@ class CanvasFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_canvas, container, false)
+        loadingScreen = view.findViewById(R.id.loadingScreen)
+
+        Handler().postDelayed({
+            loadingScreen.visibility = View.INVISIBLE
+            paintView.visibility = View.VISIBLE
+        }, 500) // 500 ms = 0.5 seconds loading
 
         mContext = container!!.context
         editTitle = view.findViewById(R.id.edit_title)
