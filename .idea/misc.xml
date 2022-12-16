@@ -22,6 +22,28 @@
         <entry key="..\:/Users/achan/AndroidStudioProjects/Paint/app/src/main/res/layout/fragment_gallery.xml" value="0.25" />
         <entry key="..\:/Users/achan/AndroidStudioProjects/Paint/app/src/main/res/layout/list_item_canvas.xml" value="0.18802083333333333" />
         <entry key="..\:/Users/achan/AndroidStudioProjects/Paint/app/src/main/res/layout/paint_view.xml" value="0.2164855072463768" />
+        <entry key="..\:/Users/mw3fa/AndroidStudioProjects/Paint-Studio/app/src/debug/res/drawable/clear_foreground.xml" value="0.23" />
+        <entry key="..\:/Users/mw3fa/AndroidStudioProjects/Paint-Studio/app/src/debug/res/drawable/deletev2_foreground.xml" value="0.23" />
+        <entry key="..\:/Users/mw3fa/AndroidStudioProjects/Paint-Studio/app/src/debug/res/drawable/ic_menu_add_foreground.xml" value="0.23" />
+        <entry key="..\:/Users/mw3fa/AndroidStudioProjects/Paint-Studio/app/src/debug/res/drawable/redo_foreground.xml" value="0.23" />
+        <entry key="..\:/Users/mw3fa/AndroidStudioProjects/Paint-Studio/app/src/debug/res/drawable/save_foreground.xml" value="0.23" />
+        <entry key="..\:/Users/mw3fa/AndroidStudioProjects/Paint-Studio/app/src/debug/res/drawable/undo_foreground.xml" value="0.23" />
+        <entry key="..\:/Users/mw3fa/AndroidStudioProjects/Paint-Studio/app/src/debug/res/drawable/width_foreground.xml" value="0.23" />
+        <entry key="..\:/Users/mw3fa/AndroidStudioProjects/Paint-Studio/app/src/debug/res/mipmap-anydpi-v26/app_paintbrush.xml" value="0.23" />
+        <entry key="..\:/Users/mw3fa/AndroidStudioProjects/Paint-Studio/app/src/debug/res/mipmap-anydpi-v26/save.xml" value="0.23" />
+        <entry key="..\:/Users/mw3fa/AndroidStudioProjects/Paint-Studio/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.23" />
+        <entry key="..\:/Users/mw3fa/AndroidStudioProjects/Paint-Studio/app/src/main/res/drawable/ic_launcher_background.xml" value="0.23" />
+        <entry key="..\:/Users/mw3fa/AndroidStudioProjects/Paint-Studio/app/src/main/res/drawable/more_background.xml" value="0.23" />
+        <entry key="..\:/Users/mw3fa/AndroidStudioProjects/Paint-Studio/app/src/main/res/drawable/more_foreground.xml" value="0.23" />
+        <entry key="..\:/Users/mw3fa/AndroidStudioProjects/Paint-Studio/app/src/main/res/drawable/paint_state.xml" value="0.23" />
+        <entry key="..\:/Users/mw3fa/AndroidStudioProjects/Paint-Studio/app/src/main/res/drawable/toolbar_background.xml" value="0.23" />
+        <entry key="..\:/Users/mw3fa/AndroidStudioProjects/Paint-Studio/app/src/main/res/layout/activity_main.xml" value="0.4041666666666667" />
+        <entry key="..\:/Users/mw3fa/AndroidStudioProjects/Paint-Studio/app/src/main/res/layout/fragment_canvas.xml" value="0.2" />
+        <entry key="..\:/Users/mw3fa/AndroidStudioProjects/Paint-Studio/app/src/main/res/layout/fragment_gallery.xml" value="0.4041666666666667" />
+        <entry key="..\:/Users/mw3fa/AndroidStudioProjects/Paint-Studio/app/src/main/res/layout/list_item_canvas.xml" value="0.4041666666666667" />
+        <entry key="..\:/Users/mw3fa/AndroidStudioProjects/Paint-Studio/app/src/main/res/menu/fragment_gallery.xml" value="0.4041666666666667" />
+        <entry key="..\:/Users/mw3fa/AndroidStudioProjects/Paint-Studio/app/src/main/res/mipmap-anydpi-v26/more.xml" value="0.23" />
+        <entry key="..\:/Users/mw3fa/AndroidStudioProjects/Paint-Studio/app/src/main/res/mipmap-anydpi-v26/more_round.xml" value="0.2205" />
       </map>
     </option>
   </component>

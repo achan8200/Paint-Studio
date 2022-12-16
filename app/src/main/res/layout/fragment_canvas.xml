@@ -25,80 +25,64 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/edit_title"
         android:background="@drawable/toolbar_background"
-        android:gravity="center"
-        android:orientation="horizontal" >
+        android:gravity="center">
 
         <ImageButton
             android:id="@+id/colorPicker"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:layout_marginVertical="10dp"
             android:layout_marginHorizontal="8dp"
+            android:layout_marginVertical="10dp"
             android:background="@color/black" />
 
         <ImageButton
             android:id="@+id/paintbrush"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:layout_marginVertical="10dp"
             android:layout_marginHorizontal="4dp"
+            android:layout_marginVertical="10dp"
             android:background="@mipmap/paintbrush" />
 
         <ImageButton
             android:id="@+id/brush_width"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:layout_marginVertical="10dp"
             android:layout_marginHorizontal="4dp"
+            android:layout_marginVertical="10dp"
             android:background="@mipmap/brush_width" />
 
         <ImageButton
             android:id="@+id/eraser"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:layout_marginVertical="10dp"
             android:layout_marginHorizontal="4dp"
+            android:layout_marginVertical="10dp"
             android:background="@mipmap/eraser" />
 
         <ImageButton
             android:id="@+id/undo"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:layout_marginVertical="10dp"
             android:layout_marginHorizontal="4dp"
+            android:layout_marginVertical="10dp"
             android:background="@mipmap/undo" />
 
         <ImageButton
             android:id="@+id/redo"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:layout_marginVertical="10dp"
             android:layout_marginHorizontal="4dp"
+            android:layout_marginVertical="10dp"
             android:background="@mipmap/redo" />
 
         <ImageButton
-            android:id="@+id/clear"
+            android:id="@+id/more"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:layout_marginVertical="10dp"
             android:layout_marginHorizontal="4dp"
-            android:background="@mipmap/clear" />
+            android:layout_marginVertical="10dp"
+            android:background="@mipmap/more" />
 
-        <ImageButton
-            android:id="@+id/save"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_marginVertical="10dp"
-            android:layout_marginHorizontal="4dp"
-            android:background="@mipmap/save" />
-
-        <ImageButton
-            android:id="@+id/delete"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_marginVertical="10dp"
-            android:layout_marginHorizontal="4dp"
-            android:background="@mipmap/deletev2" />
     </LinearLayout>
 
     <com.bignerdranch.android.paint.PaintView

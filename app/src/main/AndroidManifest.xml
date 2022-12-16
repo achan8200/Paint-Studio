@@ -15,6 +15,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/app_paintbrush_round"
         android:supportsRtl="true"
+
         android:theme="@style/Theme.Paint"
         tools:targetApi="31">
         <activity

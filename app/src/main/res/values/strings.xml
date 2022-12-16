@@ -4,4 +4,9 @@
     <string name="empty_gallery">Empty Gallery</string>
     <string name="new_canvas">New Canvas</string>
     <string name="untitled">Untitled</string>
+    <string-array name="canvas_options">
+        <item>Save</item>
+        <item>Clear</item>
+        <item>Delete</item>
+    </string-array>
 </resources>
