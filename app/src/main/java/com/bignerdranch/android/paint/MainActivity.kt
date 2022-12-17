@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import java.lang.reflect.Field
 import java.util.*
 
-
 class MainActivity : AppCompatActivity(),
     GalleryFragment.Callbacks {
 

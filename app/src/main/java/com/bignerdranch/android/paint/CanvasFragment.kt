@@ -1,9 +1,7 @@
 package com.bignerdranch.android.paint
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import androidx.fragment.app.FragmentTransaction
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Build
@@ -52,11 +50,8 @@ class CanvasFragment : Fragment() {
     private lateinit var eraserButton: ImageButton
     private lateinit var undoButton: ImageButton
     private lateinit var redoButton: ImageButton
-    private lateinit var clearButton: ImageButton
-    private lateinit var loadingScreen: ConstraintLayout
-    //private lateinit var saveButton: ImageButton
-    //private lateinit var deleteButton: ImageButton
     private lateinit var moreButton: ImageButton
+    private lateinit var loadingScreen: ConstraintLayout
     private var myColor = currentBrush
 
     private val canvasDetailViewModel: CanvasDetailViewModel by lazy {
@@ -92,120 +87,11 @@ class CanvasFragment : Fragment() {
         eraserButton = view.findViewById(R.id.eraser)
         undoButton = view.findViewById(R.id.undo)
         redoButton = view.findViewById(R.id.redo)
-        //clearButton = view.findViewById(R.id.clear)
         moreButton = view.findViewById(R.id.more)
-        //saveButton = view.findViewById(R.id.save)
-        //deleteButton = view.findViewById(R.id.delete)
-
-        moreButton.setOnClickListener {
-            // Create an alert dialog to show the save and delete options
-            val builder = AlertDialog.Builder(mContext)
-            builder.setTitle("Canvas Options")
-                .setItems(R.array.canvas_options) { _, which ->
-                    when (which) {
-                        0 -> saveCanvas() // Save the canvas
-                        1 -> clearCanvas() // Delete the canvas
-                        2 -> deleteCanvas() //clear the canvas
-                    }
-                }
-            builder.create().show()
-        }
 
         editTitle.isCursorVisible = false
 
         return view
-    }
-    private fun saveCanvas() {
-        val dialogBuilder = AlertDialog.Builder(mContext)
-        var title = canvas.title
-        title = if (title.replace("\\s".toRegex(), "") == "") {
-            "Untitled"
-        } else {
-            title.replace("\\s".toRegex(), "-")
-        }
-
-        dialogBuilder.setMessage("Image will be saved as \'$title.jpg\'")
-            .setCancelable(true)
-            .setPositiveButton("Yes") { _, _ ->
-                run {
-                    paintView.isDrawingCacheEnabled = true
-                    val imgSaved = MediaStore.Images.Media.insertImage(
-                        mContext.contentResolver,
-                        paintView.drawingCache,
-                        //UUID.randomUUID().toString(),
-                        title,
-                        "drawing"
-                    )
-                    if (imgSaved != null) {
-                        Toast.makeText(mContext, "Saved to photos", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                    else {
-                        Toast.makeText(mContext, "Error, unable to save to photos", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                    paintView.destroyDrawingCache()
-                }
-            }
-            .setNegativeButton("Cancel") { dialog, _ ->
-                dialog.cancel()
-            }
-
-        val alert = dialogBuilder.create()
-        alert.setTitle("Save as Photo?")
-        alert.show()
-    }
-    private fun deleteCanvas() {
-        val dialogBuilder = AlertDialog.Builder(mContext)
-        var title = canvas.title
-        if (title.replace("\\s".toRegex(), "") == "") {
-            title = "Untitled"
-        }
-
-        dialogBuilder.setMessage("Delete the canvas \'$title\'?")
-            .setCancelable(true)
-            .setPositiveButton("Yes") { _, _ ->
-                run {
-                    drawings.clear()
-                    undoneDrawings.clear()
-                    drawing.path.reset()
-                    mBitmap.eraseColor(Color.WHITE)
-                    paintView.setBackgroundColor(Color.WHITE)
-                    canvasDetailViewModel.deleteCanvas(this.canvas)
-                    val i = Intent(activity, MainActivity::class.java)
-                    startActivity(i)
-                }
-            }
-            .setNegativeButton("Cancel") { dialog, _ ->
-                dialog.cancel()
-            }
-
-        val alert = dialogBuilder.create()
-        alert.setTitle("Confirm Deletion")
-        alert.show()
-    }
-
-    private fun clearCanvas() {
-        val dialogBuilder = AlertDialog.Builder(mContext)
-
-        dialogBuilder.setMessage("Remove all strokes permanently?")
-            .setCancelable(true)
-            .setPositiveButton("Yes") { _, _ ->
-                run {
-                    drawings.clear()
-                    undoneDrawings.clear()
-                    drawing.path.reset()
-                    mBitmap.eraseColor(Color.WHITE)
-                    paintView.setBackgroundColor(Color.WHITE)
-                }
-            }
-            .setNegativeButton("Cancel") { dialog, _ ->
-                dialog.cancel()
-            }
-
-        val alert = dialogBuilder.create()
-        alert.setTitle("Warning")
-        alert.show()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -316,105 +202,119 @@ class CanvasFragment : Fragment() {
             paintView.setRedo()
         }
 
-        /*
-        clearButton.setOnClickListener {
-            val dialogBuilder = AlertDialog.Builder(mContext)
-
-            dialogBuilder.setMessage("Remove all strokes permanently?")
-                .setCancelable(true)
-                .setPositiveButton("Yes") { _, _ ->
-                    run {
-                        drawings.clear()
-                        undoneDrawings.clear()
-                        drawing.path.reset()
-                        mBitmap.eraseColor(Color.WHITE)
-                        paintView.setBackgroundColor(Color.WHITE)
+        moreButton.setOnClickListener {
+            // Create an alert dialog to show the save, clear, and delete options
+            val builder = AlertDialog.Builder(mContext)
+            builder.setTitle("Canvas Options")
+                .setItems(R.array.canvas_options) { _, which ->
+                    when (which) {
+                        0 -> saveCanvas() // Save the canvas
+                        1 -> clearCanvas() // Delete the canvas
+                        2 -> deleteCanvas() //clear the canvas
                     }
                 }
-                .setNegativeButton("Cancel") { dialog, _ ->
-                    dialog.cancel()
-                }
+            builder.create().show()
+        }
+    }
 
-            val alert = dialogBuilder.create()
-            alert.setTitle("Warning")
-            alert.show()
+    private fun saveCanvas() {
+        val dialogBuilder = AlertDialog.Builder(mContext)
+        var title = canvas.title
+        title = if (title.replace("\\s".toRegex(), "") == "") {
+            "Untitled"
+        } else {
+            title.replace("\\s".toRegex(), "-")
         }
 
-        saveButton.setOnClickListener {
-            val dialogBuilder = AlertDialog.Builder(mContext)
-            var title = canvas.title
-            title = if (title.replace("\\s".toRegex(), "") == "") {
-                "Untitled"
-            } else {
-                title.replace("\\s".toRegex(), "-")
+        dialogBuilder.setMessage("Image will be saved as \'$title.jpg\'")
+            .setCancelable(true)
+            .setPositiveButton("Yes") { _, _ ->
+                run {
+                    paintView.isDrawingCacheEnabled = true
+                    val imgSaved = MediaStore.Images.Media.insertImage(
+                        mContext.contentResolver,
+                        paintView.drawingCache,
+                        //UUID.randomUUID().toString(),
+                        title,
+                        "drawing"
+                    )
+                    if (imgSaved != null) {
+                        Toast.makeText(mContext, "Saved to photos", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    else {
+                        Toast.makeText(mContext, "Error, unable to save to photos", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    paintView.destroyDrawingCache()
+                }
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.cancel()
             }
 
-            dialogBuilder.setMessage("Image will be saved as \'$title.jpg\'")
-                .setCancelable(true)
-                .setPositiveButton("Yes") { _, _ ->
-                    run {
-                        paintView.isDrawingCacheEnabled = true
-                        val imgSaved = MediaStore.Images.Media.insertImage(
-                            mContext.contentResolver,
-                            paintView.drawingCache,
-                            //UUID.randomUUID().toString(),
-                            title,
-                            "drawing"
-                        )
-                        if (imgSaved != null) {
-                            Toast.makeText(mContext, "Saved to photos", Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                        else {
-                            Toast.makeText(mContext, "Error, unable to save to photos", Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                        paintView.destroyDrawingCache()
-                    }
-                }
-                .setNegativeButton("Cancel") { dialog, _ ->
-                    dialog.cancel()
-                }
+        val alert = dialogBuilder.create()
+        alert.setTitle("Save as Photo?")
+        alert.show()
+    }
 
-            val alert = dialogBuilder.create()
-            alert.setTitle("Save as Photo?")
-            alert.show()
+    private fun deleteCanvas() {
+        val dialogBuilder = AlertDialog.Builder(mContext)
+        var title = canvas.title
+        if (title.replace("\\s".toRegex(), "") == "") {
+            title = "Untitled"
         }
 
-        deleteButton.setOnClickListener {
-            val dialogBuilder = AlertDialog.Builder(mContext)
-            var title = canvas.title
-            if (title.replace("\\s".toRegex(), "") == "") {
-                title = "Untitled"
+        dialogBuilder.setMessage("Delete the canvas \'$title\'?")
+            .setCancelable(true)
+            .setPositiveButton("Yes") { _, _ ->
+                run {
+                    drawings.clear()
+                    undoneDrawings.clear()
+                    drawing.path.reset()
+                    mBitmap.eraseColor(Color.WHITE)
+                    paintView.setBackgroundColor(Color.WHITE)
+                    canvasDetailViewModel.deleteCanvas(this.canvas)
+                    val i = Intent(activity, MainActivity::class.java)
+                    startActivity(i)
+                }
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.cancel()
             }
 
-            dialogBuilder.setMessage("Delete the canvas \'$title\'?")
-                .setCancelable(true)
-                .setPositiveButton("Yes") { _, _ ->
-                    run {
-                        drawings.clear()
-                        undoneDrawings.clear()
-                        drawing.path.reset()
-                        mBitmap.eraseColor(Color.WHITE)
-                        paintView.setBackgroundColor(Color.WHITE)
-                        canvasDetailViewModel.deleteCanvas(this.canvas)
-                        val i = Intent(activity, MainActivity::class.java)
-                        startActivity(i)
-                    }
-                }
-                .setNegativeButton("Cancel") { dialog, _ ->
-                    dialog.cancel()
-                }
+        val alert = dialogBuilder.create()
+        alert.setTitle("Confirm Deletion")
+        alert.show()
+    }
 
-            val alert = dialogBuilder.create()
-            alert.setTitle("Confirm Deletion")
-            alert.show()
-        }*/
+    private fun clearCanvas() {
+        val dialogBuilder = AlertDialog.Builder(mContext)
+
+        dialogBuilder.setMessage("Remove all strokes permanently?")
+            .setCancelable(true)
+            .setPositiveButton("Yes") { _, _ ->
+                run {
+                    drawings.clear()
+                    undoneDrawings.clear()
+                    drawing.path.reset()
+                    mBitmap.eraseColor(Color.WHITE)
+                    paintView.setBackgroundColor(Color.WHITE)
+                }
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.cancel()
+            }
+
+        val alert = dialogBuilder.create()
+        alert.setTitle("Warning")
+        alert.show()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStop() {
         super.onStop()
+        currentColor(myColor)
         canvas.title = editTitle.text.toString()
         val bmp : Bitmap = convertToBitmap(paintView)
         canvas.bitmap = bitmapToString(bmp)
