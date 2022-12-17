@@ -6,6 +6,7 @@ import android.content.Intent
 import androidx.fragment.app.FragmentTransaction
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -13,6 +14,9 @@ import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.MotionEvent
+import java.util.LinkedList
+import androidx.core.util.Pair
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
@@ -57,6 +61,7 @@ class CanvasFragment : Fragment() {
     //private lateinit var saveButton: ImageButton
     //private lateinit var deleteButton: ImageButton
     private lateinit var moreButton: ImageButton
+    private lateinit var bucketButton: ImageButton
     private var myColor = currentBrush
 
     private val canvasDetailViewModel: CanvasDetailViewModel by lazy {
@@ -96,6 +101,7 @@ class CanvasFragment : Fragment() {
         moreButton = view.findViewById(R.id.more)
         //saveButton = view.findViewById(R.id.save)
         //deleteButton = view.findViewById(R.id.delete)
+        bucketButton = view.findViewById(R.id.bucket)
 
         moreButton.setOnClickListener {
             // Create an alert dialog to show the save and delete options
@@ -111,10 +117,40 @@ class CanvasFragment : Fragment() {
             builder.create().show()
         }
 
+
         editTitle.isCursorVisible = false
 
         return view
     }
+
+    private fun floodFill(bitmap: Bitmap, x: Int, y: Int, targetColor: Int, replacementColor: Int): Bitmap {
+        if (targetColor == replacementColor) return bitmap
+
+        val width = bitmap.width
+        val height = bitmap.height
+        val pixels = IntArray(width * height)
+        bitmap.getPixels(pixels, 0, width, 0, 0, width, height)
+
+        val queue = LinkedList<kotlin.Pair<Int, Int>>()
+        queue.add(kotlin.Pair(x, y))
+
+        while (queue.isNotEmpty()) {
+            val (currX, currY) = queue.poll()
+            if (currX < 0 || currY < 0 || currX >= width || currY >= height) continue
+            if (pixels[currY * width + currX] != targetColor) continue
+            pixels[currY * width + currX] = replacementColor
+
+            queue.add(kotlin.Pair(currX + 1, currY))
+            queue.add(kotlin.Pair(currX - 1, currY))
+            queue.add(kotlin.Pair(currX, currY + 1))
+            queue.add(kotlin.Pair(currX, currY - 1))
+        }
+
+        val newBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        newBitmap.setPixels(pixels, 0, width, 0, 0, width, height)
+        return newBitmap
+    }
+
     private fun saveCanvas() {
         val dialogBuilder = AlertDialog.Builder(mContext)
         var title = canvas.title
@@ -260,6 +296,20 @@ class CanvasFragment : Fragment() {
         colorButton.setOnClickListener {
             currentColor(myColor)
             openColorPickerDialogue()
+        }
+
+
+        bucketButton.setOnClickListener {
+            val x = bucketButton.x.toInt()
+            val y = bucketButton.y.toInt()
+            if (x >= 0 && y >= 0 && x < mBitmap.width && y < mBitmap.height) {
+                val targetColor = mBitmap.getPixel(x, y)
+                if (targetColor != currentBrush) {
+                    val newBitmap = floodFill(mBitmap, x, y, targetColor, currentBrush)
+                    val drawable = BitmapDrawable(resources, newBitmap)
+                    paintView.background = drawable
+                }
+            }
         }
 
         paintbrushButton.setOnClickListener {

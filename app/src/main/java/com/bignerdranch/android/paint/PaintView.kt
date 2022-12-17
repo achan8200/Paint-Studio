@@ -98,6 +98,8 @@ class PaintView : View {
         return true
     }
 
+
+
     private fun touchStart(x: Float, y: Float) {
         drawing = Drawing()
         initPaintbrush()
