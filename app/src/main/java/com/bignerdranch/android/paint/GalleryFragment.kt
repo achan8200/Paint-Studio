@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.*
 import android.widget.*
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.fragment_canvas.*
 import kotlinx.android.synthetic.main.list_item_canvas.*
 import java.util.*
 
@@ -60,6 +62,9 @@ class GalleryFragment : Fragment() {
 
         emptyGalleryMessage = view.findViewById(R.id.new_canvas) as TextView
         newCanvasButton = view.findViewById(R.id.add_canvas) as Button
+
+        emptyGalleryMessage.visibility = View.INVISIBLE
+        newCanvasButton.visibility = View.INVISIBLE
 
         newCanvasButton.setOnClickListener {
             val canvas = Canvas()
